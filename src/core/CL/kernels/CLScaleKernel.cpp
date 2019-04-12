@@ -220,8 +220,58 @@ void CLScaleKernel::configure(const ICLTensor *input, ICLTensor *output, Interpo
     unsigned int idx = is_nhwc ? 2 * num_arguments_per_4D_tensor() : 2 * num_arguments_per_2D_tensor(); //Skip the input and output parameters
 
     // Set static kernel arguments
-    const float scale_x = static_cast<float>(input_width) / output_width;
-    const float scale_y = static_cast<float>(input_height) / output_height;
+    //origine
+    //const float scale_x = static_cast<float>(input_width) / output_width;
+    //const float scale_y = static_cast<float>(input_height) / output_height;
+
+    //const float scale_x = std::ceil(static_cast<float>(input_width) / output_width);
+    //const float scale_y = std::ceil(static_cast<float>(input_height) / output_height);
+
+    //const float scale_x = static_cast<float>(input_width) / static_cast<float>(output_width);
+    //const float scale_y = static_cast<float>(input_height) / static_cast<float>(output_height);
+
+    float scale_x = static_cast<float>(input_width) / static_cast<float>(output_width);
+    float scale_y = static_cast<float>(input_height) / static_cast<float>(output_height);
+    if (input_width == 9 && output_width == 257) {
+      //scale_x = 0.036;
+      //scale_y = 0.036;
+            //scale_x = 0.046;
+            //scale_y = 0.046;
+
+//      scale_x = 0.035;
+//      scale_y = 0.035;
+      //scale_x = 0.034;
+      //scale_y = 0.034;
+            //scale_x = 0.033;//틀어진게 줄어듬
+            //scale_y = 0.033;
+
+                        //scale_x = 0.032;//마니 정확해짐
+                        //scale_y = 0.032;
+
+                                                //scale_x = 0.031;//거의 완벽
+                                                //scale_y = 0.031;
+                                                                        //scale_x = 0.030;//반대방향으로 치우짐
+                                                                        //scale_y = 0.030;
+                                                                        //scale_x = 0.029;//반대방향으로 더 치우짐
+                                                                        //scale_y = 0.029;
+
+    }
+
+    if (scale_x < 1 &&  scale_y < 1) {
+              scale_x *= 0.88;
+              scale_y *= 0.88;
+
+                            //scale_x *= 0.88;
+                            //scale_y *= 0.89;
+
+                                                        //scale_x *= 0.88;
+                                                        //scale_y *= 0.95;
+
+                                                                                                                //scale_x *= 0.88;
+                                                                                                                //scale_y *= 0.97;//올라감
+    }
+
+
 
     _kernel.setArg<float>(idx++, input_width);
     _kernel.setArg<float>(idx++, input_height);
