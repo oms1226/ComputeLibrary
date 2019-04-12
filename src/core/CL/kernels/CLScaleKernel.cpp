@@ -232,43 +232,18 @@ void CLScaleKernel::configure(const ICLTensor *input, ICLTensor *output, Interpo
 
     float scale_x = static_cast<float>(input_width) / static_cast<float>(output_width);
     float scale_y = static_cast<float>(input_height) / static_cast<float>(output_height);
-    if (input_width == 9 && output_width == 257) {
-      //scale_x = 0.036;
-      //scale_y = 0.036;
-            //scale_x = 0.046;
-            //scale_y = 0.046;
-
-//      scale_x = 0.035;
-//      scale_y = 0.035;
-      //scale_x = 0.034;
-      //scale_y = 0.034;
-            //scale_x = 0.033;//틀어진게 줄어듬
-            //scale_y = 0.033;
-
-                        //scale_x = 0.032;//마니 정확해짐
-                        //scale_y = 0.032;
-
-                                                //scale_x = 0.031;//거의 완벽
-                                                //scale_y = 0.031;
-                                                                        //scale_x = 0.030;//반대방향으로 치우짐
-                                                                        //scale_y = 0.030;
-                                                                        //scale_x = 0.029;//반대방향으로 더 치우짐
-                                                                        //scale_y = 0.029;
-
-    }
 
     if (scale_x < 1 &&  scale_y < 1) {
-              scale_x *= 0.88;
-              scale_y *= 0.88;
+              scale_x *= 0.88;//arm_compute::SamplingPolicy::TOP_LEFT
+              scale_y *= 0.88;//arm_compute::SamplingPolicy::TOP_LEFT
 
-                            //scale_x *= 0.88;
-                            //scale_y *= 0.89;
-
-                                                        //scale_x *= 0.88;
-                                                        //scale_y *= 0.95;
-
-                                                                                                                //scale_x *= 0.88;
-                                                                                                                //scale_y *= 0.97;//올라감
+              //CENTER 일 때는 적당한 값을 아직 찾지 못했다.
+              //scale_x *= 0.94;//arm_compute::SamplingPolicy::CENTER//가운데 위치하지 않고 우측에 절삭이 나타남
+              //scale_y *= 0.94;//arm_compute::SamplingPolicy::CENTER
+              //scale_x *= 0.97;//arm_compute::SamplingPolicy::CENTER//가운데 위치하지 않고 우측에 절삭이 나타남
+              //scale_y *= 0.97;//arm_compute::SamplingPolicy::CENTER
+              //scale_x *= 1.0f;//arm_compute::SamplingPolicy::CENTER//가운데 위치하나  좌우측에 절삭이 약하게 나타남
+              //scale_y *= 1.0f;//arm_compute::SamplingPolicy::CENTER
     }
 
 
