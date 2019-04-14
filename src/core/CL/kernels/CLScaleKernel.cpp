@@ -223,12 +223,14 @@ void CLScaleKernel::configure(const ICLTensor *input, ICLTensor *output, Interpo
     float scale_x = static_cast<float>(input_width) / output_width;
     float scale_y = static_cast<float>(input_height) / output_height;
 
-    if (input_width == 9 &&  output_width == 257) {
-      scale_x = scale_x*230.f/257.f;
-      scale_y = scale_y*230.f/257.f;
-    } else if (input_width == 17 &&  output_width == 513) {
-      scale_x = scale_x*484.f/513.f;
-      scale_y = scale_y*484.f/513.f;
+    //oms1226, 2019.04.14 upscaling bug patch
+    if (scale_x < 1) {
+        int real_output_width = output_width - static_cast<int>(output_width / input_width) + 1;
+        scale_x = scale_x * real_output_width / output_width;
+    }
+    if (scale_y < 1) {
+        int real_output_height = output_height - static_cast<int>(output_height / input_height) + 1;
+        scale_y = scale_y * real_output_height / output_height;
     }
 
     _kernel.setArg<float>(idx++, input_width);
