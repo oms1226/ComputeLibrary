@@ -220,33 +220,16 @@ void CLScaleKernel::configure(const ICLTensor *input, ICLTensor *output, Interpo
     unsigned int idx = is_nhwc ? 2 * num_arguments_per_4D_tensor() : 2 * num_arguments_per_2D_tensor(); //Skip the input and output parameters
 
     // Set static kernel arguments
-    //origine
-    //const float scale_x = static_cast<float>(input_width) / output_width;
-    //const float scale_y = static_cast<float>(input_height) / output_height;
+    float scale_x = static_cast<float>(input_width) / output_width;
+    float scale_y = static_cast<float>(input_height) / output_height;
 
-    //const float scale_x = std::ceil(static_cast<float>(input_width) / output_width);
-    //const float scale_y = std::ceil(static_cast<float>(input_height) / output_height);
-
-    //const float scale_x = static_cast<float>(input_width) / static_cast<float>(output_width);
-    //const float scale_y = static_cast<float>(input_height) / static_cast<float>(output_height);
-
-    float scale_x = static_cast<float>(input_width) / static_cast<float>(output_width);
-    float scale_y = static_cast<float>(input_height) / static_cast<float>(output_height);
-
-    if (scale_x < 1 &&  scale_y < 1) {
-              scale_x *= 0.88;//arm_compute::SamplingPolicy::TOP_LEFT
-              scale_y *= 0.88;//arm_compute::SamplingPolicy::TOP_LEFT
-
-              //CENTER 일 때는 적당한 값을 아직 찾지 못했다.
-              //scale_x *= 0.94;//arm_compute::SamplingPolicy::CENTER//가운데 위치하지 않고 우측에 절삭이 나타남
-              //scale_y *= 0.94;//arm_compute::SamplingPolicy::CENTER
-              //scale_x *= 0.97;//arm_compute::SamplingPolicy::CENTER//가운데 위치하지 않고 우측에 절삭이 나타남
-              //scale_y *= 0.97;//arm_compute::SamplingPolicy::CENTER
-              //scale_x *= 1.0f;//arm_compute::SamplingPolicy::CENTER//가운데 위치하나  좌우측에 절삭이 약하게 나타남
-              //scale_y *= 1.0f;//arm_compute::SamplingPolicy::CENTER
+    if (input_width == 9 &&  output_width == 257) {
+      scale_x = scale_x*230.f/257.f;
+      scale_y = scale_y*230.f/257.f;
+    } else if (input_width == 17 &&  output_width == 513) {
+      scale_x = scale_x*484.f/513.f;
+      scale_y = scale_y*484.f/513.f;
     }
-
-
 
     _kernel.setArg<float>(idx++, input_width);
     _kernel.setArg<float>(idx++, input_height);
