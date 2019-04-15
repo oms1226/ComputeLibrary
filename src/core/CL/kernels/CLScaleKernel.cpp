@@ -225,11 +225,11 @@ void CLScaleKernel::configure(const ICLTensor *input, ICLTensor *output, Interpo
 
     //oms1226, 2019.04.14 upscaling bug patch
     if (scale_x < 1) {
-        int real_output_width = output_width - static_cast<int>(output_width / input_width) + 1;
+        int real_output_width = output_width - (static_cast<float>(output_width) / input_width) + 1;
         scale_x = scale_x * real_output_width / output_width;
     }
     if (scale_y < 1) {
-        int real_output_height = output_height - static_cast<int>(output_height / input_height) + 1;
+        int real_output_height = output_height - (static_cast<float>(output_height) / input_height) + 1;
         scale_y = scale_y * real_output_height / output_height;
     }
 
